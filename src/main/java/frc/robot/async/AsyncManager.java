@@ -1,7 +1,7 @@
 package frc.robot.async;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.util.BSLogger;
+//import frc.robot.subsystems.util.BSLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,23 +21,23 @@ public class AsyncManager {
     }
 
     public void start() {
-        BSLogger.log("AsyncManager", "Starting async tasks");
+        //BSLogger.log("AsyncManager", "Starting async tasks");
         running.set(true);
         thread.start();
     }
 
     public void stop() {
-        BSLogger.log("AsyncManager", "Stopping async tasks");
+        //BSLogger.log("AsyncManager", "Stopping async tasks");
         running.set(false);
     }
 
     public void register(String taskName, Runnable runnable) {
-        BSLogger.log("AsyncManager", "Register: " + taskName);
+        //BSLogger.log("AsyncManager", "Register: " + taskName);
         tasks.add(new AsyncTask(taskName, runnable));
     }
 
     public void unregister(String taskName) {
-        BSLogger.log("AsyncManager", "Unregister: " + taskName);
+        //BSLogger.log("AsyncManager", "Unregister: " + taskName);
         tasks.removeIf(task -> task.getName().equals(taskName));
     }
 
@@ -48,7 +48,7 @@ public class AsyncManager {
     void reportOverruns() {
         int numOverruns = thread.overRun.get();
         if ((numOverruns > 0) && (Timer.getFPGATimestamp() - lastOverrunReport > 5.0)) {
-            BSLogger.log("AsyncManager", "Overruns: " + numOverruns + " in the last 5 seconds (of " + thread.numRuns.get() + " runs);");
+            //BSLogger.log("AsyncManager", "Overruns: " + numOverruns + " in the last 5 seconds (of " + thread.numRuns.get() + " runs);");
             lastOverrunReport = Timer.getFPGATimestamp();
             thread.overRun.set(0);
             thread.numRuns.set(0);
@@ -83,7 +83,7 @@ public class AsyncManager {
                     numRuns.incrementAndGet();
                 }
             }
-            BSLogger.log("AsyncManager", "Existing async manager thread");
+            //BSLogger.log("AsyncManager", "Existing async manager thread");
         }
     }
 }

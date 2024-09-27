@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DMS.DriveInfo;
-import frc.robot.subsystems.util.BSLogger;
-import frc.robot.subsystems.util.GameInfo;
 
 import java.util.function.Supplier;
 
@@ -61,7 +59,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                    SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         postConstructConfig();
-        configurePathPlanner();
+        //configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -70,7 +68,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         postConstructConfig();
-        configurePathPlanner();
+        //configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -85,28 +83,28 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
 
-    private void configurePathPlanner() {
-        double driveBaseRadius = 0.0;
-        for (var moduleLocation : m_moduleLocations) {
-            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-        }
+//     private void configurePathPlanner() {
+//         double driveBaseRadius = 0.0;
+//         for (var moduleLocation : m_moduleLocations) {
+//             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+//         }
 
-        // Assume Blue is default
-        AutoBuilder.configureHolonomic(
-                () -> this.getState().Pose,
-                this::seedFieldRelative,
-                this::getCurrentRobotChassisSpeeds,
-                (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)),
-                new HolonomicPathFollowerConfig(
-                        new PIDConstants(6, 0, 0),
-                        new PIDConstants(10, 0, 0),
-                        Constants.AutoConstants.kMaxSpeedMetersPerSecond, // TunerConstants.kSpeedAtVoltsMps,
-                        driveBaseRadius,
-                        new ReplanningConfig()),
-                GameInfo::isRedAlliance,
-                this);
+//         // Assume Blue is default
+//         AutoBuilder.configureHolonomic(
+//                 () -> this.getState().Pose,
+//                 this::seedFieldRelative,
+//                 this::getCurrentRobotChassisSpeeds,
+//                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)),
+//                 new HolonomicPathFollowerConfig(
+//                         new PIDConstants(6, 0, 0),
+//                         new PIDConstants(10, 0, 0),
+//                         Constants.AutoConstants.kMaxSpeedMetersPerSecond, // TunerConstants.kSpeedAtVoltsMps,
+//                         driveBaseRadius,
+//                         new ReplanningConfig()),
+//  //               GameInfo::isRedAlliance,
+//                 this);
 
-    }
+//     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
@@ -123,7 +121,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         try {
             return Subsystems.autoManager.getAutoPath(pathName);
         } catch (Exception e) {
-            BSLogger.log("CommandServeDrivetrain", "!!! Error attempting to locate auto path %s: %s".formatted(pathName, e));
+           // BSLogger.log("CommandServeDrivetrain", "!!! Error attempting to locate auto path %s: %s".formatted(pathName, e));
             return new PrintCommand("Cannot Locate path" + pathName);
         }
     }

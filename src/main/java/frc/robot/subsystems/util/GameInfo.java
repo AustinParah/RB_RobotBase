@@ -1,8 +1,8 @@
 package frc.robot.subsystems.util;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class GameInfo {
     public static boolean isRedAlliance() {

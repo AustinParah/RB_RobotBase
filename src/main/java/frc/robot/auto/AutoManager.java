@@ -1,19 +1,10 @@
 package frc.robot.auto;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Subsystems;
-import frc.robot.auto.strategies.*;
-import frc.robot.commands.auto.*;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.VisionAimManager;
-import frc.robot.subsystems.intake.IntakePivot;
-import frc.robot.subsystems.pose.PoseManager;
 
-import javax.naming.Name;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -66,77 +57,13 @@ public class AutoManager {
      * Registers the autonomous strategies with the chooser and the lookup map
      */
     private void registerStrategies() {
-        // registerStrategy("Debug Auto", AutoStrategies.DebugAuto, DebugAuto::new);
-        // registerStrategy("Test Path", AutoStrategies.DebugTestPath, () -> new DebugPathAuto("TestStageLeft"));
-        // registerStrategy("Test MultiPath", AutoStrategies.DebugTestMultipath,
-        // () -> new DebugPathAuto("Multipoint Test"));
-        // registerStrategy("Test Curly", AutoStrategies.DebugCurly, () -> new DebugPathAuto("TestCurly"));
-        // registerStrategy("Test Wavy", AutoStrategies.DebugWavy, () -> new DebugPathAuto("TestWave"));
-        // registerStrategy("Tests2", AutoStrategies.DebugTests2, () -> new DebugPathAuto("Test2"));
-        // registerStrategy("DCL-BCL", AutoStrategies.DCL_BCL, () -> new DebugPathAuto("DCL_BCL"));
 
-        // registerStrategy("Under The Bridge", AutoStrategies.UnderTheBridge, UnderTheBridge::new);
-        registerStrategy("Tab", AutoStrategies.Tab, Tab::new);
-        registerStrategy("DropShot", AutoStrategies.DropShot, DropShot::new);
-        // registerStrategy("CrossWing", AutoStrategies.CrossWing, CrossWingShot::new);
-        registerStrategy("BlazeBA", AutoStrategies.BlazeBA, () -> new Blaze(Blaze.BlazeRoute.BlazeBA));
-        registerStrategy("BlazeAB", AutoStrategies.BlazeAB, () -> new Blaze(Blaze.BlazeRoute.BlazeAB));
-        registerStrategy("BlazeBC", AutoStrategies.BlazeBC, () -> new Blaze(Blaze.BlazeRoute.BlazeBC));
-        registerStrategy("BlazeCB", AutoStrategies.BlazeCB, () -> new Blaze(Blaze.BlazeRoute.BlazeCB));
-        registerStrategy("BlazeAC", AutoStrategies.BlazeAC, () -> new Blaze(Blaze.BlazeRoute.BlazeAC));
-        registerStrategy("SL1toSL3", AutoStrategies.SL1toSL3, SL1toSL3::new);
     }
 
     /**
      * Registers Named commands for use in PathPlanner GUI
      */
     private void registerNamedCommands() {
-        NamedCommands.registerCommand("rotate45", new RotateToAngle(-45));
-        NamedCommands.registerCommand("StartShooter", new EnableShooterCommand());
-        NamedCommands.registerCommand("StopShooter", new EnableShooterCommand(false));
-        NamedCommands.registerCommand("StartAutoAim",
-                Subsystems.poseManager.getPoseCommand(PoseManager.Pose.ShooterAimVision));
-        NamedCommands.registerCommand("StartDrive", Subsystems.poseManager.getPoseCommand(PoseManager.Pose.Drive));
-        NamedCommands.registerCommand("ShootNote", Subsystems.shooter.shootCmd());
-
-        NamedCommands.registerCommand("WaitIntakeInPosition",
-                new WaitIntakeInPosition(IntakePivot.IntakePosition.Zero).withTimeout(1.0));
-
-        NamedCommands.registerCommand("WaitForNote", new WaitShooterHasNote().withTimeout(1.0));
-
-        NamedCommands.registerCommand("WaitNoteThenAutoAim",
-                Commands.waitUntil(Subsystems.shooter::isNoteDetected).withTimeout(1.0)
-                        .andThen(Subsystems.poseManager.getPoseCommand(PoseManager.Pose.ShooterAimVision)));
-
-        // Common
-        NamedCommands.registerCommand("StartIntake", Subsystems.poseManager.getPoseCommand(PoseManager.Pose.Pickup));
-        NamedCommands.registerCommand("FeedNote", new FeedNoteInAuto());
-
-
-        // Tab
-        NamedCommands.registerCommand("FeedNoteTab2", new FeedNoteInAutoTabShot2());
-        NamedCommands.registerCommand("TabShot2Rotate", Tab.createTabShot2Rotate());
-        NamedCommands.registerCommand("TabShot2", CommonCommands.DoTabShot2Command());
-        NamedCommands.registerCommand("TabShot3", CommonCommands.DoShotCommand("TabShot3", Tab.ThirdShot));
-        NamedCommands.registerCommand("TabShot4", CommonCommands.DoShotCommand("TabShot4", Tab.ForthShot));
-        NamedCommands.registerCommand("TabShot5", CommonCommands.DoShotCommand("TabShot5", Tab.FifthShot));
-
-        NamedCommands.registerCommand("TabQPose2", CommonCommands.queueTabShot2());
-        NamedCommands.registerCommand("TabQPose4", CommonCommands.queueTabShot4());
-        NamedCommands.registerCommand("TabFAS2", FeedAndShootAuto.createStandardShot(Tab.SecondShot));
-        NamedCommands.registerCommand("TabFAS3", FeedAndShootAuto.createStandardShot(Tab.ThirdShot));
-        NamedCommands.registerCommand("TabFAS4", FeedAndShootAuto.createStandardShot(Tab.ForthShot));
-        // NamedCommands.registerCommand("TabFAS4", CommonCommands.feedAndShootAutoCmd(Tab.ForthShot));
-        NamedCommands.registerCommand("TabFAS5", CommonCommands.feedAndShootAutoCmd(Tab.FifthShot));
-
-        // DropShot
-        NamedCommands.registerCommand("BloopShot", new BloopShot());
-
-        // Blaze
-        NamedCommands.registerCommand("BlazeQueuePivot", Subsystems.pivot.queueNextProfileCommand(Blaze.shootingPositionProfile));
-        NamedCommands.registerCommand("BlazeShot", CommonCommands.DoBlazeShotCommand(Blaze.shootingPositionProfile));
-        //SL1-SL3
-
 
     }
 
@@ -144,9 +71,9 @@ public class AutoManager {
      * Registers the autonomous paths with the path registry
      */
     private void registerAutoPaths() {
-        Tab.registerAutoPaths(pathRegistry);
-        DropShot.registerAutoPaths(pathRegistry);
-        Blaze.registerAutoPaths(pathRegistry);
+        // Tab.registerAutoPaths(pathRegistry);
+        // DropShot.registerAutoPaths(pathRegistry);
+        // Blaze.registerAutoPaths(pathRegistry);
     }
 
     // Register the strategy with the chooser and the lookup map

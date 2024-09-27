@@ -2,7 +2,7 @@ package frc.robot.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
-import frc.robot.subsystems.util.BSLogger;
+//import frc.robot.subsystems.util.BSLogger;
 
 import java.io.*;
 import java.util.HashMap;
@@ -79,7 +79,7 @@ public class RobotConfiguration {
             File configFile = new File(filePath);
             RobotConfigurationOptions configurations = mapper.readValue(configFile, RobotConfigurationOptions.class);
             var configuration = configurations.getConfiguration(configurationName);
-            BSLogger.log("RobotConfiguration", "Loaded configuration for name: " + configurationName);
+            //BSLogger.log("RobotConfiguration", "Loaded configuration for name: " + configurationName);
             return configuration;
         } catch (IOException e) {
             System.err.println("Failed to load configuration from " + filePath + ", using default configuration.");
@@ -97,17 +97,17 @@ public class RobotConfiguration {
 
         String envSelectedName = RobotConfiguration.environment.get(SELECTED_CONFIG_ENV);
         if (envSelectedName != null && !envSelectedName.isBlank()) {
-            BSLogger.log("RobotConfiguration", "Using ENV selected configuration name: " + envSelectedName);
+            //BSLogger.log("RobotConfiguration", "Using ENV selected configuration name: " + envSelectedName);
             returnValue = envSelectedName;
         } else {
             try (BufferedReader reader = new BufferedReader(new FileReader(DEFAULT_CONFIG_FILENAME))) {
                 String potentialSelected = reader.readLine();
                 if (potentialSelected != null && !potentialSelected.isBlank()) {
-                    BSLogger.log("RobotConfiguration", "Using FILE selected configuration name: " + potentialSelected);
+                    //BSLogger.log("RobotConfiguration", "Using FILE selected configuration name: " + potentialSelected);
                     returnValue = potentialSelected;
                 }
             } catch (IOException e) {
-                BSLogger.log("RobotConfiguration", "No configuration file found at: " + DEFAULT_CONFIG_FILENAME + ", using default config");
+                //BSLogger.log("RobotConfiguration", "No configuration file found at: " + DEFAULT_CONFIG_FILENAME + ", using default config");
             }
         }
         return Optional.ofNullable(returnValue);

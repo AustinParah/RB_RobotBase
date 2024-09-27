@@ -1,7 +1,7 @@
 package frc.robot.auto;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import frc.robot.subsystems.util.BSLogger;
+//import frc.robot.subsystems.util.BSLogger;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,7 +31,7 @@ public class PathRegistry {
         } catch (Exception e) {
             String message = "[PathRegistry]Error while trying to register an auto path named %s: %s"
                     .formatted(pathName, e);
-            BSLogger.log("PathRegistry", message);
+            //BSLogger.log("PathRegistry", message);
             throw new RuntimeException(message);
         }
     }
@@ -40,7 +40,7 @@ public class PathRegistry {
         if (pathMap.containsKey(pathName) && pathMap.get(pathName).peek() != null) {
             return pathMap.get(pathName).pop();
         } else {
-            BSLogger.log("PathRegistry", "Path %s not found, creating new".formatted(pathName));
+//            BSLogger.log("PathRegistry", "Path %s not found, creating new".formatted(pathName));
             return create(pathName);
         }
     }

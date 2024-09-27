@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems;
 import frc.robot.subsystems.Lifecycle;
-import frc.robot.subsystems.intake.IntakePivot.IntakePosition;
-import frc.robot.subsystems.shooter.Shooter;
+//import frc.robot.subsystems.intake.IntakePivot.IntakePosition;
+//import frc.robot.subsystems.shooter.Shooter;
 
 public class LEDSubsystem extends SubsystemBase implements Lifecycle {
     private static final double INITIAL_IGNORE_TIME = 1.0;
@@ -98,20 +98,20 @@ public class LEDSubsystem extends SubsystemBase implements Lifecycle {
             }
         }
 
-        boolean intakeDown = Subsystems.intake.isInPosition(IntakePosition.Zero);
-        int partPresent = 0;
-        if (Subsystems.intake.isNoteDetected() && !intakeDown) {
-            partPresent = 1;
-        } else if (Subsystems.intake.isNoteDetected() && intakeDown) {
-            partPresent = 2;
-        } else if (Subsystems.shooter.isNoteDetected()) {
-            partPresent = 3;
-        } else {
-            // Future
-        }
+        // boolean intakeDown = Subsystems.intake.isInPosition(IntakePosition.Zero);
+        // int partPresent = 0;
+        // if (Subsystems.intake.isNoteDetected() && !intakeDown) {
+        //     partPresent = 1;
+        // } else if (Subsystems.intake.isNoteDetected() && intakeDown) {
+        //     partPresent = 2;
+        // } else if (Subsystems.shooter.isNoteDetected()) {
+        //     partPresent = 3;
+        // } else {
+        //     // Future
+        // }
 
-        // // Has Target
-        boolean visionLock = Shooter.isReadyToShoot();
+        // // // Has Target
+        // boolean visionLock = Shooter.isReadyToShoot();
 
 
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -129,8 +129,8 @@ public class LEDSubsystem extends SubsystemBase implements Lifecycle {
 
         buffer[9] = (byte) robotState; // comm status
         buffer[10] = (byte) allianceColor;
-        buffer[11] = (byte) (visionLock ? 1 : 0);
-        buffer[12] = (byte) partPresent;
+        // buffer[11] = (byte) (visionLock ? 1 : 0);
+        // buffer[12] = (byte) partPresent;
         buffer[13] = (byte) 0;  // extra
         buffer[14] = (byte) 0;
         buffer[15] = (byte) 255;
