@@ -114,7 +114,6 @@ public class RobotContainer {
                     .withRotationalRate(supplySwerveRotate().in(RadiansPerSecond))));*/
 
     grabNote.onTrue(Subsystems.intakeSubsystem.runIntakeFastCmd()).onFalse(Subsystems.intakeSubsystem.stopIntakeCmd());
-
   }
 
   private void configureDashboardButtons(){

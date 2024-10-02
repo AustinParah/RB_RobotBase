@@ -16,10 +16,10 @@ public record RobotConfig (
                         3.12500,
                         5.357142857,
                         21.428571428571427,
-                        new SwerveModuleConfig(1, 2, 1, 0.171631),
-                        new SwerveModuleConfig(3, 4, 2, 0.454590),
-                        new SwerveModuleConfig(5, 6, 3, -0.304199),
-                        new SwerveModuleConfig(7, 8, 4, -0.490479)
+                        new SwerveModuleConfig(1, 2, 1, -0.224853515625),
+                        new SwerveModuleConfig(3, 4, 2, -0.099576171875),
+                        new SwerveModuleConfig(5, 6, 3, 0.126220703125),
+                        new SwerveModuleConfig(7, 8, 4,  -0.148681640625)
                 ),
                 1,
                 new IntakeConfig(9,10)

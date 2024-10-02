@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    DataLogManager.start();
+//    DataLogManager.start();
     RobotConfiguration.initialize();
     robotContainer = new RobotContainer();
 
@@ -47,8 +47,13 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     robotContainer.robotPeriodic();
-
 //    powerTelemetry.periodic();
+    for (int i=0;i<4;i++) {
+      var module = Subsystems.swerveSubsystem.getModule(i);
+      SmartDashboard.putNumber("Module" + i + " Abs", module.getCANcoder().getAbsolutePosition().getValue());
+      SmartDashboard.putNumber("Module" + i + " Pos", module.getCANcoder().getPosition().getValue());
+      SmartDashboard.putData(Subsystems.swerveSubsystem.getModule(i).getCANcoder());
+    }
   }
 
 

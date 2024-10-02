@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.async.AsyncManager;
 import frc.robot.auto.AutoManager;
 import frc.robot.generated.TunerConstants;
@@ -35,6 +37,11 @@ public class Subsystems {
         swerveSubsystem = TunerConstants.DriveTrain;
         intakeSubsystem = new Intake();
         createUtilitySubsystems();
+
+        SmartDashboard.putData(CommandScheduler.getInstance());
+
+
+        SmartDashboard.putData("IntakeSubsystem", intakeSubsystem);
     }
 
     public static Subsystems getInstance() {
