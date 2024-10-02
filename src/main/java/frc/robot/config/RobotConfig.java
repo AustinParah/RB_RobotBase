@@ -10,7 +10,7 @@ public record RobotConfig (
 
     static RobotConfig createDefaultConfig() {
         return new RobotConfig(
-                "Drivetrain CANivore",
+                "",
                 new SwerveConfig(
                         5.471554147,
                         3.12500,
