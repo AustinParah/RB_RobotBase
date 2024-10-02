@@ -13,8 +13,8 @@ public record RobotConfig (
                 "",
                 new SwerveConfig(
                         5.471554147,
-                        3.12500,
-                        5.357142857,
+                        3.5714285714285716,
+                        6.122448979591837,
                         21.428571428571427,
                         new SwerveModuleConfig(1, 2, 1, -0.224853515625),
                         new SwerveModuleConfig(3, 4, 2, -0.099576171875),
