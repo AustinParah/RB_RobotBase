@@ -12,6 +12,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -120,8 +121,17 @@ public class RobotContainer {
     //
     // Commands
     //
-    grabNote.onTrue(Subsystems.intakeSubsystem.runIntakeFastCmd()).onFalse(Subsystems.intakeSubsystem.stopIntakeCmd());
-    shootNote.onTrue(Subsystems.feederSubsystem.runFeederCmd()).onFalse(Subsystems.feederSubsystem.stopFeederCmd());
+    grabNote.onTrue(
+            Subsystems.intakeSubsystem.runIntakeFastCmd()
+                    .alongWith(
+                            Subsystems.feederSubsystem.runFeederCmd()
+                    )).and(() -> !Subsystems.feederSubsystem.isNotedDetected())
+            .onFalse(
+                    Subsystems.intakeSubsystem.stopIntakeCmd()
+                            .alongWith(
+                                    Subsystems.feederSubsystem.stopFeederCmd()));
+    shootNote.onTrue(Subsystems.feederSubsystem.shootFeederCmd()).onFalse(Subsystems.feederSubsystem.stopFeederCmd());
+
     startShooter.onTrue(Subsystems.shooterSubsystem.startShooterCmd());
     stopShooter.onTrue(Subsystems.shooterSubsystem.stopShooterCmd());
   }
