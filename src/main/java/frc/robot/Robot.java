@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -32,15 +33,6 @@ public class Robot extends TimedRobot {
 //    for (int i=0;i<4;i++) {
 //      Subsystems.swerveSubsystem.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
 //    }
-
-
-    // Forward LimeLight ports so they are available over USB
-//    for (int port = 5800; port <= 5807; port++) {
-//        PortForwarder.add(port, "limelight.local", port);
-//    }
-
-
- //   addPeriodic(Subsystems.ledSubsystem::Report, 0.1);
   }
 
   @Override

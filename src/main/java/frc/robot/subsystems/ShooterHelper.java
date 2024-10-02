@@ -42,7 +42,7 @@ public class ShooterHelper implements Sendable {
         this.motor = motor;
 
         this.pid = new PIDHelper(parentName + "/" + name);
-        this.pid.initialize(0.04,0,0,0,kraken_kv,kraken_kA);
+        this.pid.initialize(0.2,0,0,0,kraken_kv,kraken_kA);
 
         config = new TalonFXConfiguration();
 //                .withSoftwareLimitSwitch(
@@ -121,7 +121,9 @@ public class ShooterHelper implements Sendable {
         return (invert) ? -1 : 1;
     }
 
+
     void periodic() {
+        System.out.println("SHOOT: " + enabled + " | " + "open: " + openLoop + " | " + velocitySetpoint);
         if (enabled) {
             if (openLoop) {
                 this.motor.setControl(openLoopOut.withOutput(direction() * openLoopSetpoint));

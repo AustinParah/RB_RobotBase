@@ -45,10 +45,12 @@ public class RobotContainer {
   private final JoystickButton grabNote = new JoystickButton(left, 1);
   private final JoystickButton shootNote = new JoystickButton(right, 1);
 
-
+  private final JoystickButton startShooter = new JoystickButton(right, 2);
+  private final JoystickButton stopShooter = new JoystickButton(right, 4);
 
 
   public void robotPeriodic() {
+    Subsystems.shooterSubsystem.periodic();
   }
 
   public Command getAutonomousCommand() {
@@ -114,7 +116,13 @@ public class RobotContainer {
                     .withVelocityY(OIUtil.deadband(supplySwerveY(), 0.05) * MaxSpeed)
                     .withRotationalRate(supplySwerveRotate().in(RadiansPerSecond))));*/
 
+    //
+    // Commands
+    //
     grabNote.onTrue(Subsystems.intakeSubsystem.runIntakeFastCmd()).onFalse(Subsystems.intakeSubsystem.stopIntakeCmd());
+    shootNote.onTrue(Subsystems.feederSubsystem.runFeederCmd()).onFalse(Subsystems.feederSubsystem.stopFeederCmd());
+    startShooter.onTrue(Subsystems.shooterSubsystem.startShooterCmd());
+    stopShooter.onTrue(Subsystems.shooterSubsystem.stopShooterCmd());
   }
 
   private void configureDashboardButtons(){
