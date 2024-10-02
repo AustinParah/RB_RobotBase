@@ -17,6 +17,11 @@ public class Intake extends SubsystemBase implements Lifecycle, Sendable {
         this.intakeDrive = new TalonFX(59);
     }
 
+    @Override
+    public void teleopInit() {
+        setOutput(0);
+    }
+
     private void setOutput(double volts) {
         intakeDrive.setControl(intakeDrive_Request.withOutput(volts));
     }

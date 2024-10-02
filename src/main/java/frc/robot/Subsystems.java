@@ -46,6 +46,10 @@ public class Subsystems {
 
         SmartDashboard.putData(CommandScheduler.getInstance());
 
+        lifecycleSubsystems.add(intakeSubsystem);
+        lifecycleSubsystems.add(feederSubsystem);
+        lifecycleSubsystems.add(shooterSubsystem);
+
         SmartDashboard.putData("IntakeSubsystem", intakeSubsystem);
         SmartDashboard.putData("ShooterSubsystem", shooterSubsystem);
         SmartDashboard.putData("FeederSubsystem", feederSubsystem);

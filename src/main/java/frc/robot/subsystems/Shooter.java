@@ -16,9 +16,17 @@ public class Shooter extends SubsystemBase implements Lifecycle, Sendable {
     }
 
     @Override
+    public void teleopInit() {
+        upper.setEnabled(false);
+        upper.setVelocitySetpoint(0);
+        lower.setEnabled(false);
+        lower.setVelocitySetpoint(0);
+    }
+
+    @Override
     public void periodic() {
-        upper.periodic();
-        lower.periodic();
+//        upper.periodic();
+//        lower.periodic();
     }
 
     public Command startShooterCmd() {
@@ -29,8 +37,8 @@ public class Shooter extends SubsystemBase implements Lifecycle, Sendable {
             lower.setOpenLoop(false);
             upper.setVelocitySetpoint(-50);
             lower.setVelocitySetpoint(-50);
-//            upper.periodic();
-//            lower.periodic();
+            upper.periodic();
+            lower.periodic();
         }, this);
     }
 
@@ -38,8 +46,8 @@ public class Shooter extends SubsystemBase implements Lifecycle, Sendable {
         return Commands.runOnce(() -> {
             upper.setVelocitySetpoint(0);
             lower.setVelocitySetpoint(0);
-//            upper.periodic();
-//            lower.periodic();
+            upper.periodic();
+            lower.periodic();
             upper.setEnabled(false);
             lower.setEnabled(false);
         }, this);

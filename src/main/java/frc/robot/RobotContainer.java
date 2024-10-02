@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.config.RobotConfiguration;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Lifecycle;
 import frc.robot.subsystems.util.GameInfo;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -93,11 +94,11 @@ public class RobotContainer {
   }
 
   public void autoInit() {
-    
+    Subsystems.lifecycleSubsystems.forEach(Lifecycle::autoInit);
   }
 
   public void teleopInit() {
-
+    Subsystems.lifecycleSubsystems.forEach(Lifecycle::teleopInit);
   }
 
   private void configureBindings(){

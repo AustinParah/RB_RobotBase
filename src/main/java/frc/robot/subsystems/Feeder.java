@@ -11,12 +11,20 @@ public class Feeder extends SubsystemBase implements Lifecycle, Sendable {
     private final TalonFX motor = new TalonFX(54);
     private final DutyCycleOut openLoopOut = new DutyCycleOut(0);
 
+    public Feeder() {
+    }
+
+    @Override
+    public void teleopInit() {
+        updateFeeder(0);
+    }
+
     public void updateFeeder(double speed) {
         motor.setControl(openLoopOut.withOutput(speed));
     }
 
     public Command runFeederCmd() {
-        return Commands.run(() -> this.updateFeeder(0.5), this);
+        return Commands.run(() -> this.updateFeeder(1.0), this);
     }
 
     public Command stopFeederCmd() {

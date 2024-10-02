@@ -123,7 +123,6 @@ public class ShooterHelper implements Sendable {
 
 
     void periodic() {
-        System.out.println("SHOOT: " + enabled + " | " + "open: " + openLoop + " | " + velocitySetpoint);
         if (enabled) {
             if (openLoop) {
                 this.motor.setControl(openLoopOut.withOutput(direction() * openLoopSetpoint));
