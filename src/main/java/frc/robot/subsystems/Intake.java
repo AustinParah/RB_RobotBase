@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase implements Lifecycle, Sendable {
     private final TalonFX intakeDrive;
     private final VoltageOut intakeDrive_Request = new VoltageOut(0.0);
+    public boolean isRunning = false;
+    public boolean isAutointake = false; // NOTE: DONT EDIT IN FILE, HANDLED BY HANDLER IN CONTAINER
 
 
     public Intake() {
@@ -22,19 +24,22 @@ public class Intake extends SubsystemBase implements Lifecycle, Sendable {
         setOutput(0);
     }
 
-    private void setOutput(double volts) {
+    public void setOutput(double volts) {
         intakeDrive.setControl(intakeDrive_Request.withOutput(volts));
     }
 
     public Command stopIntakeCmd() {
+        isRunning = false;
         return new InstantCommand(() -> this.setOutput(0.0), this);
     }
 
     public Command runIntakeFastCmd() {
+        isRunning = true;
         return new InstantCommand(() -> this.setOutput(7.8), this);
     }
 
     public Command runIntakeEjectCmd() {
+        isRunning = true;
         return new InstantCommand(() -> this.setOutput(-6), this);
     }
 
