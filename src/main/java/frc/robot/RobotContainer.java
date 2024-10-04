@@ -10,6 +10,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.RobotConfiguration;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Intake;
@@ -26,7 +28,7 @@ import frc.robot.subsystems.Lifecycle;
 import frc.robot.subsystems.util.GameInfo;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 
-
+import static edu.wpi.first.units.Units.Ounce;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 public class RobotContainer {
@@ -38,6 +40,8 @@ public class RobotContainer {
   // Baisc Stuff
   private final Joystick left = new Joystick(0);
   private final Joystick right = new Joystick(1);
+
+  private final CommandXboxController gamepad = new CommandXboxController(3);
   
   private final Subsystems subsystems = Subsystems.getInstance();
 
@@ -54,8 +58,14 @@ public class RobotContainer {
   private final JoystickButton shootNote = new JoystickButton(right, 1);
   private final JoystickButton cancelGrab = new JoystickButton(left, 2);
 
-  private final JoystickButton startShooter = new JoystickButton(right, 2);
-  private final JoystickButton stopShooter = new JoystickButton(right, 4);
+  //private final JoystickButton startShooter = new JoystickButton(right, 2);
+  //private final JoystickButton stopShooter = new JoystickButton(right, 4);
+
+
+  private final Trigger startShooter = gamepad.x();
+  private final Trigger stopShooter = gamepad.y();
+  private final Trigger ejectNote = gamepad.b();
+  private final Trigger cancelIntakeGamepad = gamepad.a();
 
 
   public void robotPeriodic() {
@@ -101,7 +111,7 @@ public class RobotContainer {
    * @return the swerve rotate value
    */
   private Measure<Velocity<Angle>> supplySwerveRotate() {
-    final double DEADBAND = 0.05;
+    final double DEADBAND = 0.1;
     final double twist;
     twist = OIUtil.deadband(-left.getX(), DEADBAND) * (MaxAngularRate * 0.8);
     return RadiansPerSecond.of(twist);
@@ -146,19 +156,8 @@ public class RobotContainer {
                       .alongWith(
                               Subsystems.feederSubsystem.stopFeederCmd()));
 
-  // ChatGPT implementation
-  grabNote.onTrue(
-    new ConditionalCommand(
-        Subsystems.intakeSubsystem.runIntakeFastCmd()
-            .alongWith(Subsystems.feederSubsystem.runFeederCmd()), 
-        Subsystems.intakeSubsystem.stopIntakeCmd()
-            .alongWith(Subsystems.feederSubsystem.stopFeederCmd()),
-        Subsystems.feederSubsystem::isNoteDetected // Automatically stops when note is detected
-    )
-).onFalse(
-    Subsystems.intakeSubsystem.stopIntakeCmd()
-        .alongWith(Subsystems.feederSubsystem.stopFeederCmd())
-);
+
+  
 
 // grabNote.onTrue(
 //   new ParallelCommandGroup(
@@ -206,8 +205,17 @@ public class RobotContainer {
 
     shootNote.onTrue(Subsystems.feederSubsystem.shootFeederCmd()).onFalse(Subsystems.feederSubsystem.stopFeederCmd());
 
+  
     startShooter.onTrue(Subsystems.shooterSubsystem.startShooterCmd());
     stopShooter.onTrue(Subsystems.shooterSubsystem.stopShooterCmd());
+    cancelGrab.onTrue(Subsystems.intakeSubsystem.stopIntakeCmd()
+              .alongWith(Subsystems.feederSubsystem.stopFeederCmd())); // simple cancle grab command
+
+    cancelIntakeGamepad.onTrue(Subsystems.intakeSubsystem.stopIntakeCmd()
+              .alongWith(Subsystems.feederSubsystem.stopFeederCmd()));
+
+    ejectNote.onTrue(Subsystems.intakeSubsystem.runIntakeEjectCmd()
+              .alongWith(Subsystems.feederSubsystem.runFeederEjectCmd()));
   }
 
   private void configureDashboardButtons(){

@@ -41,10 +41,14 @@ public class Feeder extends SubsystemBase implements Lifecycle, Sendable {
     }
 
     public Command shootFeederCmd() {
-        return Commands.run(() -> this.updateFeeder(1.0), this);
+        return Commands.run(() -> this.updateFeeder(1.35), this);
     }
 
     public Command stopFeederCmd() {
         return Commands.run(() -> this.updateFeeder(0.0), this);
+    }
+
+    public Command runFeederEjectCmd() {
+        return Commands.run(() -> this.updateFeeder(-1.35));
     }
 }

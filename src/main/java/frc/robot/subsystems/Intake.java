@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase implements Lifecycle, Sendable {
 
     public Command runIntakeFastCmd() {
         isRunning = true;
-        return new InstantCommand(() -> this.setOutput(7.8), this);
+        return new InstantCommand(() -> this.setOutput(8), this);
     }
 
     public Command runIntakeEjectCmd() {

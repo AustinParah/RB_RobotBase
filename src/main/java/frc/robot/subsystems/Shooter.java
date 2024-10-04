@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase implements Lifecycle, Sendable {
             lower.setEnabled(true);
             upper.setOpenLoop(false);
             lower.setOpenLoop(false);
-            upper.setVelocitySetpoint(-75);
-            lower.setVelocitySetpoint(-75);
+            upper.setVelocitySetpoint(-50);
+            lower.setVelocitySetpoint(-50);
             upper.periodic();
             lower.periodic();
         }, this);
