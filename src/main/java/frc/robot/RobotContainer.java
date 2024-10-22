@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.RobotConfiguration;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lifecycle;
 import frc.robot.subsystems.util.GameInfo;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 
@@ -51,11 +53,29 @@ public class RobotContainer {
     .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01)
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+  //Intake
+  private final JoystickButton grabNote = new JoystickButton(left, 1);
+  private final JoystickButton shootNote = new JoystickButton(right, 1);
+  private final JoystickButton cancelGrab = new JoystickButton(left, 2);
 
+  //private final JoystickButton startShooter = new JoystickButton(right, 2);
+  //private final JoystickButton stopShooter = new JoystickButton(right, 4);
+
+
+  private final Trigger startShooter = gamepad.x();
+  private final Trigger stopShooter = gamepad.y();
+  private final Trigger ejectNote = gamepad.b();
+  private final Trigger cancelIntakeGamepad = gamepad.a();
 
 
   public void robotPeriodic() {
- 
+    Subsystems.shooterSubsystem.periodic();
+
+    if(Subsystems.feederSubsystem.isNotedDetected() && Subsystems.intakeSubsystem.isRunning && Subsystems.intakeSubsystem.isAutointake){
+      Subsystems.intakeSubsystem.isAutointake = false;
+      Subsystems.feederSubsystem.stopFeederCmd();
+      Subsystems.intakeSubsystem.stopIntakeCmd();
+    }
   }
 
   public Command getAutonomousCommand() {
@@ -98,11 +118,11 @@ public class RobotContainer {
   }
 
   public void autoInit() {
-    
+    Subsystems.lifecycleSubsystems.forEach(Lifecycle::autoInit);
   }
 
   public void teleopInit() {
-    
+    Subsystems.lifecycleSubsystems.forEach(Lifecycle::teleopInit);
   }
 
   private void configureBindings(){
@@ -112,9 +132,105 @@ public class RobotContainer {
                     .withVelocityX(OIUtil.deadband(supplySwerveX(), 0.05) * MaxSpeed)
                     .withVelocityY(OIUtil.deadband(supplySwerveY(), 0.05) * MaxSpeed)
                     .withRotationalRate(supplySwerveRotate().in(RadiansPerSecond))));
+
+    // TODO: Add button if we want this
+    /*robotCentric.whileTrue(
+            Subsystems.swerveSubsystem.applyRequest(() -> robotCentricDrive
+
+                    .withDeadband(0.02 * MaxSpeed)
+                    .withVelocityX(OIUtil.deadband(supplySwerveY(), 0.05) * MaxSpeed)
+                    .withVelocityY(OIUtil.deadband(supplySwerveY(), 0.05) * MaxSpeed)
+                    .withRotationalRate(supplySwerveRotate().in(RadiansPerSecond))));*/
+
+    //
+    // Commands
+    //
+    //Jason implementation
+    grabNote.onTrue(
+      Subsystems.intakeSubsystem.runIntakeFastCmd()
+              .alongWith(
+                      Subsystems.feederSubsystem.runFeederCmd()
+              )).and(() -> !Subsystems.feederSubsystem.isNotedDetected())
+      .onFalse(
+              Subsystems.intakeSubsystem.stopIntakeCmd()
+                      .alongWith(
+                              Subsystems.feederSubsystem.stopFeederCmd()));
+
+
+  
+
+// grabNote.onTrue(
+//   new ParallelCommandGroup(
+//       Subsystems.intakeSubsystem.runIntakeFastCmd(),
+//       Subsystems.feederSubsystem.runFeederCmd()
+//   )
+// ).onFalse(
+//   new InstantCommand(() -> {
+//       Subsystems.intakeSubsystem.stopIntakeCmd();
+//       Subsystems.feederSubsystem.stopFeederCmd();
+//   })
+// );
+
+// // Override automatic stopping when the note is detected
+// Subsystems.feederSubsystem.setDefaultCommand(
+//   new ConditionalCommand(
+//       new InstantCommand(() -> {
+//           // Stop intake and feeder automatically if the note is detected
+//           Subsystems.intakeSubsystem.stopIntakeCmd();
+//           Subsystems.feederSubsystem.stopFeederCmd();
+//       }),
+//       new ParallelCommandGroup(
+//           Subsystems.intakeSubsystem.runIntakeFastCmd(),
+//           Subsystems.feederSubsystem.runFeederCmd()
+//       ),
+//       Subsystems.feederSubsystem::isNoteDetected
+//   )
+// );
+
+
+    //grabNote.onTrue(new InstantCommand(this::handleIntakeLogic));
+    // if(!Subsystems.intakeSubsystem.isRunning){ // todo: ignore my spaghetti
+    //   grabNote.onTrue( ParallelCommandGroup(
+    //   Subsystems.intakeSubsystem.runIntakeFastCmd()),
+    //   Subsystems.feederSubsystem.runFeederCmd());
+    // } else{
+    // grabNote.onTrue( Subsystems.intakeSubsystem.stopIntakeCmd()
+    //                         .alongWith(Subsystems.feederSubsystem.stopFeederCmd()));
+    // }
+
+    //NOTE: TEST CASE
+    // grabNote.onTrue(
+    //   new InstantCommand(() -> Subsystems.intakeSubsystem.setOutput(5.0))
+    // );
+
+    shootNote.onTrue(Subsystems.feederSubsystem.shootFeederCmd()).onFalse(Subsystems.feederSubsystem.stopFeederCmd());
+
+  
+    startShooter.onTrue(Subsystems.shooterSubsystem.startShooterCmd());
+    stopShooter.onTrue(Subsystems.shooterSubsystem.stopShooterCmd());
+    cancelGrab.onTrue(Subsystems.intakeSubsystem.stopIntakeCmd()
+              .alongWith(Subsystems.feederSubsystem.stopFeederCmd())); // simple cancle grab command
+
+    cancelIntakeGamepad.onTrue(Subsystems.intakeSubsystem.stopIntakeCmd()
+              .alongWith(Subsystems.feederSubsystem.stopFeederCmd()));
+
+    ejectNote.onTrue(Subsystems.intakeSubsystem.runIntakeEjectCmd()
+              .alongWith(Subsystems.feederSubsystem.runFeederEjectCmd()));
   }
 
   private void configureDashboardButtons(){
     
+  }
+
+  private void handleIntakeLogic(){
+    if(!Subsystems.intakeSubsystem.isRunning){
+      Subsystems.intakeSubsystem.runIntakeFastCmd();
+      Subsystems.feederSubsystem.runFeederCmd();
+      Subsystems.intakeSubsystem.isAutointake = true;
+      return;
+    }
+    Subsystems.intakeSubsystem.stopIntakeCmd();
+    Subsystems.feederSubsystem.stopFeederCmd();
+    Subsystems.intakeSubsystem.isAutointake = false;
   }
 }
